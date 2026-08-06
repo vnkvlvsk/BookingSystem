@@ -6,6 +6,7 @@ REST API for booking shared resources (meeting rooms, restaurant tables, etc.) w
 
 - Create, list, cancel, and reschedule bookings
 - Automatic conflict detection: overlapping bookings for the same room are rejected
+- Search for rooms available in a given time range, instead of guessing a room and hitting a conflict
 - Cancellation is a soft delete (status change to `CANCELLED`) — booking history is preserved, not erased
 - Centralized error handling with proper HTTP status codes (404 not found, 409 conflict) instead of raw 500s
 
@@ -53,6 +54,7 @@ mvn test
 |--------|---------------------------|---------------------------------|
 | POST   | `/rooms`                  | Create a room                  |
 | GET    | `/rooms`                  | List rooms                     |
+| GET    | `/rooms/available`        | Rooms free in a `start`/`end` range (query params) |
 | POST   | `/users`                  | Create a user                  |
 | GET    | `/users`                  | List users                     |
 | POST   | `/bookings`                | Create a booking               |
@@ -73,6 +75,14 @@ A second request for the same room with an overlapping time range is rejected:
 ```json
 {"status":409,"message":"Room 1 is already booked for that time range"}
 ```
+
+### Example: finding available rooms
+
+```bash
+curl "http://localhost:8080/rooms/available?start=2026-08-10T10:00:00&end=2026-08-10T11:00:00"
+```
+
+Returns only rooms with no `CONFIRMED` booking overlapping that range.
 
 ## Roadmap
 

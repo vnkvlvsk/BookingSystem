@@ -4,6 +4,7 @@ import com.example.booking.entity.Room;
 import com.example.booking.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,5 +24,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
+    }
+
+    @Override
+    public List<Room> getAvailableRooms(LocalDateTime startTime, LocalDateTime endTime) {
+        return roomRepository.findAvailable(startTime, endTime);
     }
 }
